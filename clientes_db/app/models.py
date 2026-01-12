@@ -7,7 +7,7 @@ class Cliente(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String, nullable=False)
-    telefone = Column(Integer, nullable=False)      # Long (Java) → int (Python)
+    telefone = Column(Integer, nullable=False)
     correntista = Column(Boolean, nullable=False, default=False)
     saldo_cc = Column(Float, nullable=False, default=0.0)
 

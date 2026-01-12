@@ -64,7 +64,6 @@ def update_cliente(id: int, body: ClienteUpdate, db: Session = Depends(get_db)):
     if body.correntista is not None:
         cliente.correntista = body.correntista
     if body.saldo_cc is not None:
-        # regra: nunca saldo negativo no update → 400
         if body.saldo_cc < 0.0:
             raise HTTPException(status_code=400, detail="Saldo não pode ser negativo")
         cliente.saldo_cc = float(body.saldo_cc)

@@ -253,7 +253,6 @@ def test_create_cliente_sem_saldo_opcional_branch(client):
         "nome": "Sem Saldo",
         "telefone": 123456789,
         "correntista": True
-        # sem saldo_cc
     })
     assert r.status_code == 201
     body = r.json()

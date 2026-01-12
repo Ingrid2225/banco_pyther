@@ -195,7 +195,7 @@ async def delete_cliente(id: int, db: DbClient = Depends(get_db)):
     except RequestError:
         raise HTTPException(status_code=503, detail="clientes_db indisponível")
 
-    return None  # 204
+    return None
 
 
 @router.get(

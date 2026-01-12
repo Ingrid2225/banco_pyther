@@ -54,7 +54,6 @@ class FakeDbClient:
         if id_ not in self.data:
             raise http_status_error(404, "Cliente não encontrado", method="PUT", url=f"http://fake-db/clientes/{id_}")
         if "saldo_cc" in payload and payload["saldo_cc"] is not None and float(payload["saldo_cc"]) < 0:
-            # 400 regra negativa
             raise http_status_error(400, "Saldo não pode ser negativo no update.", method="PUT", url=f"http://fake-db/clientes/{id_}")
         self.data[id_].update(payload)
         return self.data[id_]
@@ -76,10 +75,8 @@ def client_env():
     fake_db.reset()
 
 def test_get_db_env(monkeypatch):
-    # sem env → default
     monkeypatch.delenv("CLIENTES_DB_URL", raising=False)
     assert isinstance(get_db(), DbClient)
-    # com env → usa string informada
     monkeypatch.setenv("CLIENTES_DB_URL", "http://clientes-db:8001")
     assert isinstance(get_db(), DbClient)
 
