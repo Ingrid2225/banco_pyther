@@ -1,0 +1,16 @@
+
+[run]
+branch = True
+source =
+    clientes_api
+    clientes_db
+omit =
+    */__init__.py
+    .venv/*
+    tests/*
+    */main.py
+
+[report]
+fail_under = 100
+show_missing = True
+skip_covered = False
