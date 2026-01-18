@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/javer_microservicos.iml" filepath="$PROJECT_DIR$/.idea/javer_microservicos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pyther_microservicos.iml" filepath="$PROJECT_DIR$/.idea/pyther_microservicos.iml" />
     </modules>
   </component>
 </project>
