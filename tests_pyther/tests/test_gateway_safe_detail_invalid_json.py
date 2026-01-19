@@ -4,7 +4,6 @@ from clientes_api.app.routers.contas import _safe_detail
 
 def _http_status_error_invalid_json(status: int, raw: bytes):
     req = httpx.Request("GET", "http://x")
-    # Conteúdo NÃO-JSON para forçar resp.json() a levantar ValueError
     resp = httpx.Response(status, content=raw)
     return httpx.HTTPStatusError("err", request=req, response=resp)
 
