@@ -18,7 +18,7 @@ def _session_mem():
     return sessionmaker(bind=engine, autocommit=False, autoflush=False)()
 
 def test_sacar_fastpath_novo_saldo_maior_igual_zero():
-    """Cobre ramo rápido do sacar (novo_saldo >= 0) e o return (~176–178)."""
+    # Código que fiz pra cobrir a linha (176–178).
     db = _session_mem()
     conta = Conta(
         agencia="5555", numero_conta="1212", nome="Rick",
@@ -28,13 +28,13 @@ def test_sacar_fastpath_novo_saldo_maior_igual_zero():
     )
     db.add(conta); db.commit(); db.refresh(conta)
 
-    # IMPORTANTE: schema do clientes_db usa alias "saldo"
+    
     body = OperacaoPorChaves(agencia="5555", numero_conta="1212", saldo=50.0)
     out = sacar(body=body, db=db)
     assert out["saldo_cc"] == 150.0  # 200 - 50
 
 def test_cheque_especial_return_final():
-    """Cobre o return final do endpoint de cheque especial (~linha 267)."""
+    # Código para cobrir a linah 267.
     db = _session_mem()
     conta = Conta(
         agencia="4444", numero_conta="3434", nome="Morty",
