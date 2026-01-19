@@ -177,6 +177,17 @@ http://localhost:8001
 Na raiz do projeto:
 coverage run -m pytest -c tests_pyther/pytest.ini -q
 
+☑️ Endpoints Principais (clientes_api)
+
+GET	/contas	Listar contas
+POST	/contas	Criar conta
+GET	/contas/{agencia}/{numero_conta}	Obter conta
+PUT	/contas/{agencia}/{numero_conta}	Atualizar conta
+DELETE	/contas/{agencia}/{numero_conta}/desativar	Desativar conta
+POST	/contas/operacoes/depositar	Depositar
+POST	/contas/operacoes/sacar	Sacar
+PUT	/contas/{agencia}/{numero_conta}/cheque_especial/cadastrar	Ajustar cheque especial
+GET	/contas/{agencia}/{numero_conta}/score_credito	Score de crédito
 
 
 ☑️ EXEMPLOS DE USO
