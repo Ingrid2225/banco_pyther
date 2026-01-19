@@ -5,7 +5,7 @@ import pytest
 async def test_score_credito_rounding_gateway(api_async_client):
     client, fake = api_async_client
 
-    # Saldo que vai exercitar round(..., 4) e o return final do endpoint
+    
     async def obter_custom(ag, num):
         return {"saldo_cc": 123.45678}
     fake.obter_conta = obter_custom
@@ -13,7 +13,7 @@ async def test_score_credito_rounding_gateway(api_async_client):
     r = await client.get("/contas/777/8888/score_credito")
     assert r.status_code == 200
     body = r.json()
-    # 10% de 123.45678 arredondado em 4 casas
+    
     assert body["score_credito"] == 12.3457
     assert body["agencia"] == "777"
     assert body["numero_conta"] == "8888"
