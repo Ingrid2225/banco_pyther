@@ -6,7 +6,7 @@ from clientes_db.app.db import get_db
 
 
 def test_to_out_branches_limite_atual_e_score():
-    
+
     c1 = Conta(
         agencia="0001",
         numero_conta="1234",
@@ -21,10 +21,9 @@ def test_to_out_branches_limite_atual_e_score():
     )
     c1.id = 1
     out1 = _to_out(c1)
-    assert out1["limite_atual"] == 80.0  
-    assert out1["score_credito"] == 0.0 
+    assert out1["limite_atual"] == 80.0  # 100 - 20
+    assert out1["score_credito"] == 0.0  # saldo < 0
 
-   
     c2 = Conta(
         agencia="0001",
         numero_conta="9999",
@@ -44,7 +43,7 @@ def test_to_out_branches_limite_atual_e_score():
 
 
 def test_get_by_id_or_404_lanca_404_para_id_inexistente():
-    
+
     gen = get_db()
     db = next(gen)
     try:
@@ -55,7 +54,7 @@ def test_get_by_id_or_404_lanca_404_para_id_inexistente():
             assert exc.status_code == 404
             assert exc.detail["code"] == "CONTA_NAO_ENCONTRADA"
     finally:
-        
+
         try:
             next(gen)
         except StopIteration:

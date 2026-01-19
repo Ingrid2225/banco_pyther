@@ -3,7 +3,6 @@ import pytest
 import httpx
 from fastapi import HTTPException
 
-
 from clientes_api.app.routers.contas import get_db, _raise_unavailable, _safe_detail
 from clientes_api.app.services.db_conta import DbConta
 
@@ -30,7 +29,7 @@ def test_raise_unavailable_gera_http_503():
 
 
 def test_safe_detail_branch_detail_tipo_lista_vai_para_mensagem_padrao():
-   
+
     e = _http_status_error_with_detail(detail=["algo"], status=502)
     out = _safe_detail(e)
     assert out["status"] == 502

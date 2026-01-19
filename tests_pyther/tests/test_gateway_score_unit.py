@@ -10,12 +10,12 @@ class _FakeDb:
 
 @pytest.mark.asyncio
 async def test_score_credito_unit_saldo_zero():
-    db = _FakeDb(0.0)  
+    db = _FakeDb(0.0)
     resp = await calcular_score_gateway("7", "77", db=db)
     assert resp == {"agencia": "7", "numero_conta": "77", "score_credito": 0.0}
 
 @pytest.mark.asyncio
 async def test_score_credito_unit_rounding():
-    db = _FakeDb(123.45678)  # aciona round(..., 4)
+    db = _FakeDb(123.45678)
     resp = await calcular_score_gateway("9", "99", db=db)
     assert resp == {"agencia": "9", "numero_conta": "99", "score_credito": 12.3457}

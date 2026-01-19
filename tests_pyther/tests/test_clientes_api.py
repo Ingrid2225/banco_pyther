@@ -13,11 +13,11 @@ def _http_status_error(status: int, detail):
 async def test_handler_422_personalizado_api(api_async_client):
     client, _ = api_async_client
     invalido = {
-        "agencia": "12",            
-        "numero_conta": "ABCD",       
-        "cpf": "123",               
-        "telefone": 1,               
-        "email": "x"                  
+        "agencia": "12",               # curto
+        "numero_conta": "ABCD",       # não numérico
+        "cpf": "123",                 # curto
+        "telefone": 1,               # curto
+        "email": "x"                  # inválido
     }
     r = await client.post("/contas", json=invalido)
     assert r.status_code == 422
@@ -51,7 +51,7 @@ async def test_criar_listar_obter_atualizar_api(api_async_client):
 @pytest.mark.asyncio
 async def test_desativar_fluxo_api(api_async_client):
     client, fake = api_async_client
-    # saldo não zero
+
     async def fake_obter_conta_naozerado(ag, num):
         return {"saldo_cc": 10.0}
     fake.obter_conta = fake_obter_conta_naozerado
@@ -59,7 +59,7 @@ async def test_desativar_fluxo_api(api_async_client):
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "SALDO_NAO_ZERADO"
 
-    # saldo zero
+
     async def fake_obter_conta_zerado(ag, num):
         return {"saldo_cc": 0.0}
     fake.obter_conta = fake_obter_conta_zerado
@@ -83,7 +83,6 @@ async def test_operacoes_api(api_async_client):
 @pytest.mark.asyncio
 async def test_cheque_especial_api(api_async_client):
     client, fake = api_async_client
-    # obter_conta deve retornar id para o fluxo da rota
     async def obter_com_id(ag, num):
         return {"id": 99}
     fake.obter_conta = obter_com_id
@@ -126,13 +125,10 @@ async def test_score_credito_api(api_async_client):
     assert r.status_code == 200
     assert r.json()["score_credito"] == 0.0
 
-
-
 @pytest.mark.asyncio
 async def test_api_requesterror_por_endpoint(api_async_client):
     client, fake = api_async_client
 
-    # 1) POST /contas -> criar_conta (RequestError mapeado p/ 503)
     async def boom_criar(payload=None):
         raise httpx.RequestError("unavailable", request=httpx.Request("POST", "http://x"))
     fake.criar_conta = boom_criar
@@ -143,34 +139,30 @@ async def test_api_requesterror_por_endpoint(api_async_client):
     assert r.status_code == 503
     assert r.json()["detail"]["code"] == "CLIENTES_DB_INDISPONIVEL"
 
-    # 2) GET /contas -> listar_contas
     async def boom_listar():
         raise httpx.RequestError("unavailable", request=httpx.Request("GET", "http://x"))
     fake.listar_contas = boom_listar
     r = await client.get("/contas")
     assert r.status_code == 503
 
-    # 3) GET /contas/{ag}/{num} -> obter_conta
     async def boom_obter(ag, num):
         raise httpx.RequestError("unavailable", request=httpx.Request("GET", "http://x"))
     fake.obter_conta = boom_obter
     r = await client.get("/contas/111/2222")
     assert r.status_code == 503
 
-    # 4) PUT /contas/{ag}/{num} -> atualizar_conta
     async def boom_atualizar(ag, num, payload):
         raise httpx.RequestError("unavailable", request=httpx.Request("PUT", "http://x"))
     fake.atualizar_conta = boom_atualizar
     r = await client.put("/contas/111/2222", json={"nome": "BB"})
     assert r.status_code == 503
 
-    # 5) DELETE /contas/{ag}/{num}/desativar -> usar HTTPStatusError (o endpoint trata esse caso)
-    async def ok_obter(ag, num):  
+    async def ok_obter(ag, num):  # permitir chegar à chamada de desativar
         return {"saldo_cc": 0.0}
     fake.obter_conta = ok_obter
 
     async def err_desativar(ag, num):
-        # usar HTTPStatusError porque o endpoint captura esse tipo (não RequestError)
+
         raise _http_status_error(409, {"status": 409, "code": "CONFLITO_DEL", "message": "..."})
     fake.desativar_conta = err_desativar
 
@@ -178,21 +170,18 @@ async def test_api_requesterror_por_endpoint(api_async_client):
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "CONFLITO_DEL"
 
-    # 6) POST /contas/operacoes/depositar -> depositar
     async def boom_depositar(payload=None):
         raise httpx.RequestError("unavailable", request=httpx.Request("POST", "http://x"))
     fake.depositar = boom_depositar
     r = await client.post("/contas/operacoes/depositar", json={"agencia": "123", "numero_conta": "0000", "saldo": 1.0})
     assert r.status_code == 503
 
-    # 7) POST /contas/operacoes/sacar -> sacar
     async def boom_sacar(payload=None):
         raise httpx.RequestError("unavailable", request=httpx.Request("POST", "http://x"))
     fake.sacar = boom_sacar
     r = await client.post("/contas/operacoes/sacar", json={"agencia": "123", "numero_conta": "0000", "saldo": 1.0})
     assert r.status_code == 503
 
-    # 8) PUT /contas/{ag}/{num}/cheque_especial/cadastrar -> cadastrar_cheque_especial
     async def ok_obter_id(ag, num):
         return {"id": 7}
     fake.obter_conta = ok_obter_id
@@ -207,7 +196,7 @@ async def test_api_requesterror_por_endpoint(api_async_client):
 async def test_api_httpstatuserror_por_endpoint(api_async_client):
     client, fake = api_async_client
 
-    # 1) POST /contas
+
     async def err_criar(payload=None):
         raise _http_status_error(409, {"status": 409, "code": "CONTA_DUPLICADA", "message": "dup"})
     fake.criar_conta = err_criar
@@ -218,7 +207,7 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "CONTA_DUPLICADA"
 
-    # 2) GET /contas
+
     async def err_listar():
         raise _http_status_error(500, {"status": 500, "code": "X", "message": "Y"})
     fake.listar_contas = err_listar
@@ -226,7 +215,7 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 500
     assert r.json()["detail"]["code"] == "X"
 
-    # 3) GET /contas/{ag}/{num}
+
     async def err_obter(ag, num):
         raise _http_status_error(404, {"status": 404, "code": "NAO", "message": "sem"})
     fake.obter_conta = err_obter
@@ -234,7 +223,6 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 404
     assert r.json()["detail"]["code"] == "NAO"
 
-    # 4) PUT /contas/{ag}/{num}
     async def err_atualizar(ag, num, payload):
         raise _http_status_error(400, {"status": 400, "code": "REQ", "message": "inv"})
     fake.atualizar_conta = err_atualizar
@@ -242,7 +230,6 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 400
     assert r.json()["detail"]["code"] == "REQ"
 
-    # 5) DELETE /contas/{ag}/{num}/desativar (saldo zerado p/ chamar desativar)
     async def ok_obter(ag, num):
         return {"saldo_cc": 0.0}
     fake.obter_conta = ok_obter
@@ -253,7 +240,6 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "CONFLITO"
 
-    # 6) POST /contas/operacoes/depositar
     async def err_depositar(payload=None):
         raise _http_status_error(422, {"status": 422, "code": "VAL", "message": "bad"})
     fake.depositar = err_depositar
@@ -261,7 +247,6 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 422
     assert r.json()["detail"]["code"] == "VAL"
 
-    # 7) POST /contas/operacoes/sacar
     async def err_sacar(payload=None):
         raise _http_status_error(409, {"status": 409, "code": "SALDO_INSUFICIENTE", "message": "..."})
     fake.sacar = err_sacar
@@ -269,7 +254,6 @@ async def test_api_httpstatuserror_por_endpoint(api_async_client):
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "SALDO_INSUFICIENTE"
 
-    # 8) PUT /contas/{ag}/{num}/cheque_especial/cadastrar
     async def ok_obter_id(ag, num):
         return {"id": 7}
     fake.obter_conta = ok_obter_id

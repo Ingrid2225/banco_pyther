@@ -8,7 +8,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-# ---- clientes_db (sync app) fixtures ----
 @pytest.fixture(scope="function")
 def db_test_client():
     from clientes_db.app.main import app as db_app
@@ -36,13 +35,9 @@ def db_test_client():
     finally:
         db_app.dependency_overrides.clear()
 
-# ---- clientes_api (async app) fixture ----
 @pytest_asyncio.fixture(scope="function")
 async def api_async_client():
-    """
-    Retorna (httpx.AsyncClient, fake_db) para o gateway.
-    Usa ASGITransport (httpx>=0.28) e evita o erro de async fixture.
-    """
+
     from clientes_api.app.main import app as api_app
     from clientes_api.app.routers.contas import get_db as api_get_db
 

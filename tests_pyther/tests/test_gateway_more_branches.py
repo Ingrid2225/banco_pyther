@@ -67,7 +67,7 @@ async def test_score_credito_zero(api_async_client):
 async def test_desativar_primeiro_try_requesterror(api_async_client):
     client, fake = api_async_client
 
-    # 1º try: obter_conta -> RequestError (mapa 503)
+
     async def boom_obter(ag, num):
         raise httpx.RequestError("unavailable", request=httpx.Request("GET", "http://x"))
     fake.obter_conta = boom_obter
