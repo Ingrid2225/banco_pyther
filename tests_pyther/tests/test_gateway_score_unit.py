@@ -10,7 +10,7 @@ class _FakeDb:
 
 @pytest.mark.asyncio
 async def test_score_credito_unit_saldo_zero():
-    db = _FakeDb(0.0)  # aciona explicitamente o return final do endpoint
+    db = _FakeDb(0.0)  
     resp = await calcular_score_gateway("7", "77", db=db)
     assert resp == {"agencia": "7", "numero_conta": "77", "score_credito": 0.0}
 
