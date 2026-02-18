@@ -21,8 +21,8 @@ def test_to_out_branches_limite_atual_e_score():
     )
     c1.id = 1
     out1 = _to_out(c1)
-    assert out1["limite_atual"] == 80.0  # 100 - 20
-    assert out1["score_credito"] == 0.0  # saldo < 0
+    assert out1["limite_atual"] == 80.0
+    assert out1["score_credito"] == 0.0
 
     c2 = Conta(
         agencia="0001",

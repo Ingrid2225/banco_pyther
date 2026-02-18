@@ -178,7 +178,6 @@ def test_desativar_fluxo(db_test_client):
     r = c.delete("/contas/7777/0001/desativar")
     assert r.status_code == 204
 
-
     r = c.get("/contas/7777/0001")
     assert r.status_code == 404
 

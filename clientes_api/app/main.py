@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -21,7 +20,6 @@ async def validation_exception_handler(request, exc: RequestValidationError):
         "numero_conta": "Número da conta deve ter entre 4 e 8 dígitos numéricos.",
         "cpf": "CPF deve ter exatamente 11 números.",
         "telefone": "Telefone deve ter entre 10 e 11 dígitos numéricos.",
-        "saldo": "O valor precisa ser maior que zero.",
         "limite": "O limite deve ser maior ou igual a zero.",
         "habilitado": "O campo 'habilitado' deve ser True ou False."
     }

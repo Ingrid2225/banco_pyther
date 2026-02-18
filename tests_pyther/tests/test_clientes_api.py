@@ -13,11 +13,11 @@ def _http_status_error(status: int, detail):
 async def test_handler_422_personalizado_api(api_async_client):
     client, _ = api_async_client
     invalido = {
-        "agencia": "12",               # curto
-        "numero_conta": "ABCD",       # não numérico
-        "cpf": "123",                 # curto
-        "telefone": 1,               # curto
-        "email": "x"                  # inválido
+        "agencia": "12",
+        "numero_conta": "ABCD",
+        "cpf": "123",
+        "telefone": 1,
+        "email": "x"
     }
     r = await client.post("/contas", json=invalido)
     assert r.status_code == 422
